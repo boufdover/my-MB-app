@@ -1,78 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Vibe App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #f3f4f6; }
-        .android-card { border-radius: 24px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
-    </script>
+    <title>Test Form</title>
 </head>
-<body class="p-6 flex items-center justify-center min-h-screen">
+<body style="font-family: sans-serif; padding: 20px;">
 
-    <div class="bg-white p-8 android-card w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800">Submit Data</h1>
-        
-        <form id="dataForm" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Name</label>
-                <input type="text" id="name" name="name" required 
-                    class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Message</label>
-                <textarea id="message" name="message" rows="4" required 
-                    class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500"></textarea>
-            </div>
-
-            <button type="submit" id="submitBtn"
-                class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition duration-200">
-                Submit to Sheet
-            </button>
-        </form>
-
-        <div id="status" class="mt-4 text-center hidden">
-            <p class="text-green-600 font-medium">Data sent successfully! 🎉</p>
-        </div>
-    </div>
+    <h2>Vibe App Test</h2>
+    <form id="dataForm">
+        <p>Name: <br><input type="text" id="name" required></p>
+        <p>Message: <br><textarea id="message" required></textarea></p>
+        <button type="submit" id="submitBtn">Submit Data</button>
+    </form>
+    <p id="status" style="color: green; display: none;">Sent successfully!</p>
 
     <script>
-        // PASTE YOUR GOOGLE WEB APP URL HERE
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwPcZRSlq0sXfHlwDKmGQtcXUzkYdn1RPqJcWabrXgeqdWSjEdtAJn5Nkf_1e0tJH4/exec';
+        const WEB_APP_URL = 'YOUR_URL_HERE'; // DOUBLE CHECK THIS IS YOUR ACTUAL URL
 
         document.getElementById('dataForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('status');
-            
             btn.disabled = true;
             btn.innerText = 'Sending...';
 
-            const data = {
-                name: document.getElementById('name').value,
-                message: document.getElementById('message').value
-            };
-
             fetch(WEB_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Essential for Google Apps Script
-                cache: 'no-cache',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-            .then(() => {
-                status.classList.remove('hidden');
-                btn.innerText = 'Submit Again';
-                btn.disabled = false;
-                document.getElementById('dataForm').reset();
-            })
-            .catch(err => {
-                console.error(err);
-                alert('Something went wrong. Check the console.');
-                btn.disabled = false;
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    name: document.getElementById('name').value,
+                    message: document.getElementById('message').value
+                })
+            }).then(() => {
+                document.getElementById('status').style.display = 'block';
+                btn.innerText = 'Sent!';
             });
         });
     </script>
