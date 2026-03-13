@@ -3,39 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Tracker</title>
+    <title>Tracker Pro Dark</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f0f2f5; font-family: -apple-system, sans-serif; }
+        /* Dark Mode Vibe */
+        body { 
+            background-color: #1a1d21; 
+            color: #e9ecef;
+            font-family: -apple-system, sans-serif; 
+        }
         .app-card { 
-            background: white; 
+            background: #2c3036; 
             border-radius: 20px; 
             padding: 25px; 
             margin-top: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            border: 1px solid #3d424a;
         }
-        .form-label { font-weight: 600; color: #555; margin-bottom: 5px; }
+        .form-label { font-weight: 600; color: #adb5bd; margin-bottom: 5px; }
         .form-control, .form-select { 
             border-radius: 12px; 
             padding: 12px; 
-            border: 1px solid #e0e0e0; 
-            background-color: #f9f9f9;
+            border: 1px solid #495057; 
+            background-color: #212529;
+            color: white;
         }
-        .form-control:focus { background-color: #fff; box-shadow: 0 0 0 4px rgba(0,123,255,0.1); }
+        .form-control:focus, .form-select:focus { 
+            background-color: #212529; 
+            color: white;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.25);
+        }
+        /* Style for date picker icon color in some browsers */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
         .btn-submit { 
-            background-color: #007bff; 
+            background-color: #0d6efd; 
             border: none; 
             border-radius: 12px; 
             padding: 16px; 
             font-weight: bold; 
             font-size: 1.1rem;
-            transition: transform 0.1s ease;
+            margin-top: 10px;
         }
-        .btn-submit:active { transform: scale(0.98); }
         .success-banner {
             display: none;
-            background-color: #d1e7dd;
-            color: #0f5132;
+            background-color: #198754;
+            color: white;
             padding: 15px;
             border-radius: 12px;
             text-align: center;
@@ -50,7 +65,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
             <div class="app-card">
-                <div id="statusBanner" class="success-banner">Data Recorded! ✅</div>
+                <div id="statusBanner" class="success-banner">Saved to Sheet! ✅</div>
                 <h3 class="mb-4 text-center">New Entry</h3>
                 
                 <form id="trackerForm">
@@ -70,11 +85,11 @@
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label class="form-label">Site</label>
-                            <input type="text" id="site" class="form-control" placeholder="e.g. SkyBet" required>
+                            <input type="text" id="site" class="form-control" placeholder="SkyBet" required>
                         </div>
                         <div class="col-6 mb-3">
                             <label class="form-label">Game</label>
-                            <input type="text" id="game" class="form-control" placeholder="e.g. Roulette" required>
+                            <input type="text" id="game" class="form-control" placeholder="Roulette" required>
                         </div>
                     </div>
 
@@ -99,7 +114,7 @@
                     </div>
 
                     <button type="submit" id="submitBtn" class="btn btn-primary btn-submit w-100">
-                        Submit to Spreadsheet
+                        Submit Entry
                     </button>
                 </form>
             </div>
@@ -108,10 +123,7 @@
 </div>
 
 <script>
-    // 1. Automatically set the date field to today
     document.getElementById('date').valueAsDate = new Date();
-
-    // 2. PASTE YOUR WEB APP URL FROM GOOGLE APPS SCRIPT HERE
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwUpiEIZ2g4cvj30tndocdO03FT4XsW-q8cQwhWzNkATwwNlhkButBYx6ZepL4cZLQf/exec';
 
     const form = document.getElementById('trackerForm');
@@ -120,10 +132,8 @@
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        // Visual feedback
         btn.disabled = true;
-        btn.innerText = 'Sending Data...';
+        btn.innerText = 'Syncing...';
 
         const payload = {
             account: document.getElementById('account').value,
@@ -139,27 +149,17 @@
         fetch(WEB_APP_URL, {
             method: 'POST',
             mode: 'no-cors',
-            cache: 'no-cache',
             body: JSON.stringify(payload)
         })
         .then(() => {
-            // Success Routine
             banner.style.display = 'block';
-            btn.innerText = 'Submit Again';
+            btn.innerText = 'Submit Another';
             btn.disabled = false;
             form.reset();
-            document.getElementById('date').valueAsDate = new Date(); // Re-set date
-            
-            // Hide banner after 4 seconds
+            document.getElementById('date').valueAsDate = new Date();
             setTimeout(() => { banner.style.display = 'none'; }, 4000);
-        })
-        .catch(err => {
-            alert('Error saving data: ' + err);
-            btn.disabled = false;
-            btn.innerText = 'Try Again';
         });
     });
 </script>
-
 </body>
 </html>
